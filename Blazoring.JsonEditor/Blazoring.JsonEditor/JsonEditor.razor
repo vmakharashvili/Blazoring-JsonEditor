@@ -1,0 +1,142 @@
+﻿@using System.Text.Json
+
+@if (JsonObject != null)
+{
+    <div style="margin-left:20px; min-width:500px">
+        @foreach (var value in JsonObject.GetPropertyNames())
+        {
+            <div>
+                @if (JsonObject.GetPropertyValue(value).ValueKind == JsonValueKind.Number)
+                {
+                    <span class="property-name">"@value"</span><span>:</span>
+                    <span class="value-content value-number">@JsonObject.GetPropertyValue(value).ToString()</span>
+                }
+                else if (JsonObject.GetPropertyValue(value).ValueKind == JsonValueKind.String)
+                {
+                    <span class="property-name">"@value"</span><span>:</span><span class="value-content value-string">"@JsonObject.GetPropertyValue(value).ToString()"</span>
+                }
+                else if (JsonObject.GetPropertyValue(value).ValueKind == JsonValueKind.True || JsonObject.GetPropertyValue(value).ValueKind == JsonValueKind.False)
+                {
+                    <span class="property-name">"@value"</span><span>:</span><span class="value-content value-boolean">@JsonObject.GetPropertyValue(value)</span>
+                }
+                else if (JsonObject.GetPropertyValue(value).ValueKind == JsonValueKind.Null)
+                {
+                    <span class="property-name">"@value"</span><span>:</span><span class="value-content value-null">@JsonObject.GetPropertyValue(value).ToString()</span>
+                }
+                else if (JsonObject.GetPropertyValue(value).ValueKind == JsonValueKind.Array)
+                {
+                    <span class="property-name">"@value"</span><span>:</span><span class="value-content value-array">@JsonObject.GetPropertyValue(value).ToJsonString()</span>
+                }
+                else if (JsonObject.GetPropertyValue(value).ValueKind == JsonValueKind.Object)
+                {
+                    <span class="property-name">"@value"</span><span>:</span>
+                    @*<div style="margin-left:20px">*@
+                    <span>
+                        <span>{</span>
+                        <JsonEditor Value="@(((JsonObject)JsonObject.GetPropertyValue(value)).ToJsonString())"
+                                    ValueChanged="@(e => JsonObjectUpdated(value, e))"></JsonEditor>
+                        <span>}</span>
+                    </span>
+                    @*<div>@(((JsonObject)JsonObject.GetPropertyValue(value)).ToJsonString())</div>*@
+                    @*</div>*@
+                }
+                @if (value != JsonObject.GetPropertyNames().Last())
+                {<span>,</span>}
+                <span><button class="d-btn" @onclick="(() => RemoveValue(value))">x</button></span>
+            </div>
+        }
+        <div>
+            <JsonItemEditor JsonObject="@JsonObject" JsonObjectChanged="@ValueUpdated"></JsonItemEditor>
+        </div>
+    </div>
+}
+else
+{
+    <JsonItemEditor JsonObject="@JsonObject" JsonObjectChanged="@ValueUpdated"></JsonItemEditor>
+}
+
+<style>
+    .property-name {
+        padding: 3px;
+        color: brown;
+    }
+
+    .d-btn {
+        padding: 2px;
+        font-size: 9px;
+        line-height: 1px;
+        color: red;
+    }
+
+    .value-content {
+        padding: 3px;
+        font-style: italic;
+    }
+
+    .value-string {
+        color: darkgoldenrod;
+    }
+
+    .value-number {
+        color: blueviolet;
+    }
+
+    .value-null {
+        color: darkred;
+    }
+
+    .value-array {
+        color: darkgreen;
+    }
+
+    .value-boolean {
+        color: chocolate;
+    }
+</style>
+
+@code {
+
+    [Parameter] public string? Value { get; set; }
+
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+
+    private JsonObject? JsonObject { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Value != null)
+        {
+            JsonObject = JsonNode.Parse(Value) as JsonObject;
+        }
+        await base.OnParametersSetAsync();
+    }
+
+    private void ValueUpdated(JsonObject jsonObject)
+    {
+        Console.WriteLine(jsonObject.ToJsonString());
+        JsonObject = jsonObject;
+        ValueChanged.InvokeAsync(jsonObject.ToJsonString());
+        StateHasChanged();
+    }
+
+    private void JsonObjectUpdated(string prop, string value)
+    {
+        if (JsonObject != null)
+        {
+            JsonObject[prop] = JsonNode.Parse(value);
+            ValueChanged.InvokeAsync(JsonObject.ToJsonString());
+            StateHasChanged();
+        }
+    }
+
+    private void RemoveValue(string prop)
+    {
+        if (JsonObject != null)
+        {
+            JsonObject.Remove(prop);
+            ValueChanged.InvokeAsync(JsonObject.ToJsonString());
+            StateHasChanged();
+        }
+    }
+
+}

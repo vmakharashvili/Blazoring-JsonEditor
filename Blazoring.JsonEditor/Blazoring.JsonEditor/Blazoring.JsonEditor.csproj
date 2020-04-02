@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RazorLangVersion>3.0</RazorLangVersion>
+    <LangVersion>Latest</LangVersion>
+    <Nullable>Enable</Nullable>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="5.0.0-preview.1.20124.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.0-preview.1.20124.5" />
+    <PackageReference Include="System.Text.Json" Version="5.0.0-preview.1.20120.5" />
+  </ItemGroup>
+
+</Project>

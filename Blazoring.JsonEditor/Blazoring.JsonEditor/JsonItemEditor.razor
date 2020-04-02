@@ -1,0 +1,123 @@
+﻿@using System.Text.Json
+
+<button @onclick="AddNew1" Size="ButtonSize.Small" Class="j-btn">
+    @(AddNew ? "-" : "+")
+</button>
+
+@if (AddNew)
+{
+    <div class="new-item-container">
+        <div class="row">
+            <div class="col-6 p-2">
+                <input Placeholder="Propery Name" @bind-value="PropertyName" Style="width:100%" />
+            </div>
+            <div class="col-6 p-2">
+                <select TValue="JsonValueKind" @bind="ValueKind" Style="width:100%">
+                    <option Value="JsonValueKind.Null">NULL</option>
+                    <option Value="JsonValueKind.String">String</option>
+                    <option Value="JsonValueKind.Number">Number</option>
+                    <option Value="JsonValueKind.Object">Object</option>
+                    <option Value="JsonValueKind.Array">Array</option>
+                    <option Value="JsonValueKind.True">Boolean</option>
+                </select>
+            </div>
+        </div>
+        <div>
+            @if (ValueKind == JsonValueKind.String || ValueKind == JsonValueKind.Array)
+            {
+                <input Placeholder="Value" @bind-value="Value" Style="width:100%" />
+            }
+            else if (ValueKind == JsonValueKind.Number)
+            {
+                <input type="number" TValue="double?" Placeholder="Value" @bind-value="NumericValue" Style="width:100%" />
+            }
+            else if (ValueKind == JsonValueKind.True)
+            {
+                <select TValue="bool?" @bind="BooleanValue" Style="width:100%">
+                    <option Value="default(bool?)"></option>
+                    <option Value="true">TRUE</option>
+                    <option Value="false">FALSE</option>
+                </select>
+            }
+        </div>
+        <button @onclick="SaveNode" Size="ButtonSize.Small">+</button>
+    </div>
+}
+
+<style>
+    .j-btn {
+        padding: 2px;
+        font-size: 9px;
+        line-height: 1px;
+    }
+
+    .new-item-container {
+        background: #fff;
+        border: 1px solid #808080;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 3px 3px 10px #1d1d1d;
+    }
+</style>
+
+@code {
+    [Parameter] public JsonObject? JsonObject { get; set; }
+
+    [Parameter] public EventCallback<JsonObject> JsonObjectChanged { get; set; }
+
+    private JsonValueKind ValueKind { get; set; } = JsonValueKind.Null;
+    private bool AddNew = false;
+
+    private string? PropertyName;
+    private string? Value;
+    private double? NumericValue;
+    private bool? BooleanValue;
+
+
+    private void AddNew1(MouseEventArgs e)
+    {
+        AddNew = !AddNew;
+        StateHasChanged();
+    }
+
+    async Task SaveNode()
+    {
+        if (!string.IsNullOrWhiteSpace(PropertyName))
+        {
+            if (JsonObject == null) JsonObject = new JsonObject();
+
+            if (ValueKind == JsonValueKind.String && !string.IsNullOrWhiteSpace(Value))
+            {
+                JsonObject.Add(PropertyName, new JsonString(Value));
+            }
+            else if (ValueKind == JsonValueKind.Number && NumericValue != null)
+            {
+                JsonObject.Add(PropertyName, new JsonNumber(NumericValue.Value));
+            }
+            else if (ValueKind == JsonValueKind.Null)
+            {
+                JsonObject.Add(PropertyName, new JsonNull());
+            }
+            else if (ValueKind == JsonValueKind.Object)
+            {
+                JsonObject.Add(PropertyName, new JsonObject());
+            }
+            else if (ValueKind == JsonValueKind.Array && !string.IsNullOrEmpty(Value))
+            {
+                List<JsonNode> nodeArray = Value.Split(',').Select(x => JsonNode.Parse(x)).ToList();
+
+                JsonObject.Add(PropertyName, new JsonArray(nodeArray));
+            }
+            else if (ValueKind == JsonValueKind.True && BooleanValue != null)
+            {
+                JsonObject.Add(PropertyName, new JsonBoolean(BooleanValue.Value));
+            }
+            await JsonObjectChanged.InvokeAsync(JsonObject);
+            PropertyName = null;
+            Value = null;
+            NumericValue = null;
+            AddNew = false;
+            ValueKind = JsonValueKind.Null;
+        }
+    }
+}
