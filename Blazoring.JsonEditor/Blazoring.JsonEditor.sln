@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29905.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazoring.JsonEditor", "Blazoring.JsonEditor\Blazoring.JsonEditor.csproj", "{A821FE8E-9AC2-433D-8082-56C844CE25F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazoring.JsonEditor.Demo", "Blazoring.JsonEditor.Demo\Blazoring.JsonEditor.Demo.csproj", "{65859557-DA10-4AAB-A220-D48E81C98AD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazoring.JsonEditor.Demo", "Blazoring.JsonEditor.Demo\Blazoring.JsonEditor.Demo.csproj", "{65859557-DA10-4AAB-A220-D48E81C98AD9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

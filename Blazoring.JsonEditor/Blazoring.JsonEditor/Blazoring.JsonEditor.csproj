@@ -5,6 +5,8 @@
     <RazorLangVersion>3.0</RazorLangVersion>
     <LangVersion>Latest</LangVersion>
     <Nullable>Enable</Nullable>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
 
