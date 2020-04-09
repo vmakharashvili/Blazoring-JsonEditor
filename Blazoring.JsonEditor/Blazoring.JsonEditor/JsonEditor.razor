@@ -50,7 +50,7 @@
                         <JsonItemEditor JsonObject="@JsonObject" JsonObjectChanged="@ValueUpdated" KeyValues="KeyValues"
                                         EditingPropertyName="@value"></JsonItemEditor>
                     }
-                    <span><button class="d-btn" @onclick="@(() => RemoveValue(value))">x</button></span>
+                    <span><button class="j-btn j-btn-danger" @onclick="@(() => RemoveValue(value))">V</button></span>
                 </div>
             }
             <div>
@@ -67,6 +67,30 @@
 <ValidationMessage For="@ValidationFor" />
 
 <style>
+    .j-btn {
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        line-height: 1px;
+        font-family: 'Wingdings 2';
+        font-size: 14px;
+    }
+
+    .j-btn-primary{
+        color: darkblue;
+    }
+
+    .j-btn-danger {
+        color: red;
+    }
+
+    .j-txt {
+        padding:2px 5px;
+        border-radius:5px;
+        border:1px solid #ccc;
+        width:100%;
+    }
+
     .property-name {
         padding: 3px;
         color: brown;

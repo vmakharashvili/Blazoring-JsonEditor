@@ -1,88 +1,96 @@
 ﻿@using System.Text.Json
 
 <button @onclick="@(() => AddNew1())" class="j-btn">
-    @(string.IsNullOrEmpty(EditingPropertyName) ? "+":"-")
+    @(AddNew ? "Ð" : (string.IsNullOrEmpty(EditingPropertyName) ? "Ê" : "$"))
 </button>
 
 @if (AddNew)
 {
+    <EditForm Model="JsonItem" OnValidSubmit="SaveNode">
+        <DataAnnotationsValidator/>
     <div class="new-item-container">
         <div class="row">
-            @if (ValueKind != JsonValueKind.False && ValueKind != JsonValueKind.Undefined)
+            @if (JsonItem.ValueKind != JsonValueKind.False && JsonItem.ValueKind != JsonValueKind.Null)
             {
-                <div class="col-6 p-2">
-                    @if (string.IsNullOrEmpty(EditingPropertyName))
-                    {
-                        <InputText @bind-Value="PropertyName" style="width:100%" />
-                    }
-                    else
-                    {
-                        <InputText @bind-Value="EditingPropertyName" style="width:100%" readonly></InputText>
-                    }
-                </div>
+            <div class="col-6 p-2">
+                <label>Property Name</label>
+                @if (string.IsNullOrEmpty(EditingPropertyName))
+                {
+                    <InputText @bind-Value="JsonItem.PropertyName" class="j-txt" />
+                }
+                else
+                {
+                    <InputText @bind-Value="JsonItem.PropertyName" class="j-txt" readonly></InputText>
+                }
+                <ValidationMessage For="@(() => JsonItem.PropertyName)" />
+            </div>
             }
             <div class="col-6 p-2">
-                <InputSelect TValue="JsonValueKind" Value="ValueKind" style="width:100%"
-                        ValueChanged="@(e => SelectedValueKind(e))" ValueExpression="@(() => ValueKind)">
-                    <option value="JsonValueKind.Null">NULL</option>
-                    <option value="JsonValueKind.String">String</option>
-                    <option value="JsonValueKind.Number">Number</option>
-                    <option value="JsonValueKind.Object">Object</option>
-                    <option value="JsonValueKind.Array">Array</option>
-                    <option value="JsonValueKind.True">Boolean</option>
+                <label>Property Type</label>
+                <InputSelect TValue="JsonValueKind" @bind-Value="JsonItem.ValueKind" class="j-txt">
+                    <option value="@JsonValueKind.Undefined">NULL</option>
+                    <option value="@JsonValueKind.String">String</option>
+                    <option value="@JsonValueKind.Number">Number</option>
+                    <option value="@JsonValueKind.Object">Object</option>
+                    <option value="@JsonValueKind.Array">Array</option>
+                    <option value="@JsonValueKind.True">Boolean</option>
                     @if (string.IsNullOrEmpty(EditingPropertyName))
                     {
-                        <option value="JsonValueKind.Undefined">Json Block</option>
+                        <option value="@JsonValueKind.Null">Json Block</option>
                         @if (KeyValues?.Count > 0)
                         {
-                            <option value="JsonValueKind.False">Variable</option>
+                            <option value="@JsonValueKind.False">Variable</option>
                         }
                     }
                 </InputSelect>
+                <ValidationMessage For="@(() => JsonItem.ValueKind)" />
             </div>
         </div>
         <div>
-            @if (ValueKind == JsonValueKind.String || ValueKind == JsonValueKind.Array)
+            <label>Value:</label>
+            @if (JsonItem.ValueKind == JsonValueKind.String || JsonItem.ValueKind == JsonValueKind.Array)
             {
-                <InputText @bind-Value="Value" style="width:100%" />
+                <InputText @bind-Value="JsonItem.Value" style="width:100%" />
+                <ValidationMessage For="@(() => JsonItem.Value)" />
             }
-            else if (ValueKind == JsonValueKind.Number)
+            else if (JsonItem.ValueKind == JsonValueKind.Number)
             {
-                <InputNumber TValue="double?" @bind-Value="NumericValue" style="width:100%"></InputNumber>
+                <InputNumber TValue="double?" @bind-Value="JsonItem.NumericValue" style="width:100%"></InputNumber>
+                <ValidationMessage For="@(() => JsonItem.NumericValue)" />
             }
-            else if (ValueKind == JsonValueKind.True)
+            else if (JsonItem.ValueKind == JsonValueKind.True)
             {
-                <InputSelect TValue="bool?" @bind-Value="BooleanValue" Style="width:100%">
-                    <option value="default(bool?)"></option>
-                    <option value="true">TRUE</option>
-                    <option value="false">FALSE</option>
+                <InputSelect TValue="bool?" @bind-Value="JsonItem.BooleanValue" Style="width:100%">
+                    <option value="@(default(bool?))"></option>
+                    <option value="@true">TRUE</option>
+                    <option value="@false">FALSE</option>
                 </InputSelect>
+                <ValidationMessage For="@(() => JsonItem.BooleanValue)" />
             }
-            else if (ValueKind == JsonValueKind.False && KeyValues?.Count > 0)
+            else if (JsonItem.ValueKind == JsonValueKind.False && KeyValues?.Count > 0)
             {
-                <InputSelect TValue="string" @bind-Value="@Value" style="width: 100%">
+                <InputSelect TValue="string" @bind-Value="@JsonItem.Value" style="width: 100%">
                     <option value="default(string?)"></option>
                     @foreach (var kv in KeyValues)
                     {
                         <option Value="kv.Value">@kv.Key</option>
                     }
                 </InputSelect>
+                <ValidationMessage For="@(()  => JsonItem.Value)" />
             }
-            else if (ValueKind == JsonValueKind.Undefined)
+            else if (JsonItem.ValueKind == JsonValueKind.Null)
             {
-                <InputTextArea @bind-Value="@Value" rows="5" style="width:100%; min-width:200px;"></InputTextArea>
+                <InputTextArea @bind-Value="@JsonItem.Value" rows="5" style="width:100%; min-width:200px;"></InputTextArea>
+                <ValidationMessage For="@(() => JsonItem.Value)" />
             }
         </div>
-        <button @onclick="SaveNode" class="button1">Save</button>
+        <button type="submit" class="button1">Save</button>
     </div>
+    </EditForm>
 }
 
 <style>
-    .j-btn {
-        padding: 2px;
-        font-size: 9px;
-        line-height: 1px;
-    }
+   
 
     .new-item-container {
         background: #fff;
@@ -90,6 +98,7 @@
         padding: 10px;
         border-radius: 5px;
         box-shadow: 3px 3px 10px #1d1d1d;
+        width:400px;
     }
 
     .button1{
@@ -107,16 +116,19 @@
 
     [Parameter] public string? EditingPropertyName { get; set; }
 
-    private JsonValueKind ValueKind { get; set; } = JsonValueKind.Null;
+    // private JsonValueKind ValueKind { get; set; } = JsonValueKind.Null;
     private bool AddNew = false;
 
-    private string? PropertyName;
-    private string? Value;
-    private double? NumericValue;
-    private bool? BooleanValue;
+    //private string? PropertyName;
+    //private string? Value;
+    //private double? NumericValue;
+    //private bool? BooleanValue;
+
+    private JsonItem? JsonItem { get; set; }
 
     private void AddNew1()
     {
+        JsonItem = new JsonItem();
         AddNew = !AddNew;
         StateHasChanged();
     }
@@ -125,71 +137,73 @@
     {
         @if (EditingPropertyName != null)
         {
+            JsonItem = new JsonItem();
+            JsonItem.PropertyName = EditingPropertyName;
+
             var f = JsonObject.GetPropertyValue(EditingPropertyName);
-            ValueKind = f.ValueKind;
+            JsonItem.ValueKind = f.ValueKind;
             if (f.ValueKind == JsonValueKind.String)
             {
-                Value = f.ToString();
+                JsonItem.Value = f.ToString();
             }
             else if (f.ValueKind == JsonValueKind.Number)
             {
-                NumericValue = Convert.ToDouble(f.ToString());
+                JsonItem.NumericValue = Convert.ToDouble(f.ToString());
             }
             else if (f.ValueKind == JsonValueKind.True)
             {
-                BooleanValue = true;
+                JsonItem.BooleanValue = true;
             }
             else if (f.ValueKind == JsonValueKind.False)
             {
-                BooleanValue = false;
-                ValueKind = JsonValueKind.True;
+                JsonItem.BooleanValue = false;
+                JsonItem.ValueKind = JsonValueKind.True;
             }
             else if (f.ValueKind == JsonValueKind.Array)
             {
-                Value = f.ToJsonString();
-                Value = Value.Substring(1, Value.Length - 2);
+                string Value1 = f.ToJsonString();
+                JsonItem.Value = Value1.Substring(1, Value1.Length - 2);
             }
         }
     }
 
     async Task SaveNode()
     {
-        if ((!string.IsNullOrWhiteSpace(PropertyName) || ValueKind == JsonValueKind.False || ValueKind == JsonValueKind.Undefined)
-            && string.IsNullOrEmpty(EditingPropertyName))
+        if (string.IsNullOrWhiteSpace(EditingPropertyName) && JsonItem != null)
         {
 
             if (JsonObject == null) JsonObject = new JsonObject();
 
-            if (ValueKind == JsonValueKind.String && !string.IsNullOrWhiteSpace(Value))
+            if (JsonItem.ValueKind == JsonValueKind.String && !string.IsNullOrWhiteSpace(JsonItem.Value))
             {
-                JsonObject.Add(PropertyName, new JsonString(Value));
+                JsonObject.Add(JsonItem.PropertyName, new JsonString(JsonItem.Value));
             }
-            else if (ValueKind == JsonValueKind.Number && NumericValue != null)
+            else if (JsonItem.ValueKind == JsonValueKind.Number && JsonItem.NumericValue != null)
             {
-                JsonObject.Add(PropertyName, new JsonNumber(NumericValue.Value));
+                JsonObject.Add(JsonItem.PropertyName, new JsonNumber(JsonItem.NumericValue.Value));
             }
-            else if (ValueKind == JsonValueKind.Null)
+            else if (JsonItem.ValueKind == JsonValueKind.Undefined)
             {
-                JsonObject.Add(PropertyName, new JsonNull());
+                JsonObject.Add(JsonItem.PropertyName, new JsonNull());
             }
-            else if (ValueKind == JsonValueKind.Object)
+            else if (JsonItem.ValueKind == JsonValueKind.Object)
             {
-                JsonObject.Add(PropertyName, new JsonObject());
+                JsonObject.Add(JsonItem.PropertyName, new JsonObject());
             }
-            else if (ValueKind == JsonValueKind.Array && !string.IsNullOrEmpty(Value))
+            else if (JsonItem.ValueKind == JsonValueKind.Array && !string.IsNullOrEmpty(JsonItem.Value))
             {
-                List<JsonNode> nodeArray = Value.Split(',').Select(x => JsonNode.Parse(x)).ToList();
+                List<JsonNode> nodeArray = JsonItem.Value.Split(',').Select(x => JsonNode.Parse(x)).ToList();
 
-                JsonObject.Add(PropertyName, new JsonArray(nodeArray));
+                JsonObject.Add(JsonItem.PropertyName, new JsonArray(nodeArray));
             }
-            else if (ValueKind == JsonValueKind.True && BooleanValue != null)
+            else if (JsonItem.ValueKind == JsonValueKind.True && JsonItem.BooleanValue != null)
             {
-                JsonObject.Add(PropertyName, new JsonBoolean(BooleanValue.Value));
+                JsonObject.Add(JsonItem.PropertyName, new JsonBoolean(JsonItem.BooleanValue.Value));
             }
-            else if ((ValueKind == JsonValueKind.False || ValueKind == JsonValueKind.Undefined) && !string.IsNullOrEmpty(Value))
+            else if ((JsonItem.ValueKind == JsonValueKind.False || JsonItem.ValueKind == JsonValueKind.Null) && !string.IsNullOrEmpty(JsonItem.Value))
             {
-                if (!Value.StartsWith("{")) Value = "{" + Value + "}";
-                var node = (JsonObject)JsonNode.Parse(Value);
+                if (!JsonItem.Value.StartsWith("{")) JsonItem.Value = "{" + JsonItem.Value + "}";
+                var node = (JsonObject)JsonNode.Parse(JsonItem.Value);
                 var pr = node.GetPropertyNames();
                 if (pr?.Count > 0)
                 {
@@ -202,49 +216,47 @@
         }
         if (!string.IsNullOrEmpty(EditingPropertyName) && JsonObject != null)
         {
-            if (ValueKind == JsonValueKind.String && !string.IsNullOrWhiteSpace(Value))
+            if (JsonItem.ValueKind == JsonValueKind.String && !string.IsNullOrWhiteSpace(JsonItem.Value))
             {
-                JsonObject[EditingPropertyName] = new JsonString(Value);
+                JsonObject[EditingPropertyName] = new JsonString(JsonItem.Value);
             }
-            else if (ValueKind == JsonValueKind.Number && NumericValue != null)
+            else if (JsonItem.ValueKind == JsonValueKind.Number && JsonItem.NumericValue != null)
             {
-                JsonObject[EditingPropertyName] = new JsonNumber(NumericValue.Value);
+                JsonObject[EditingPropertyName] = new JsonNumber(JsonItem.NumericValue.Value);
             }
-            else if (ValueKind == JsonValueKind.Null)
+            else if (JsonItem.ValueKind == JsonValueKind.Undefined)
             {
                 JsonObject[EditingPropertyName] = new JsonNull();
             }
-            else if (ValueKind == JsonValueKind.Object)
+            else if (JsonItem.ValueKind == JsonValueKind.Object)
             {
                 JsonObject[EditingPropertyName] = new JsonObject();
             }
-            else if (ValueKind == JsonValueKind.Array && !string.IsNullOrEmpty(Value))
+            else if (JsonItem.ValueKind == JsonValueKind.Array && !string.IsNullOrEmpty(JsonItem.Value))
             {
-                List<JsonNode> nodeArray = Value.Split(',').Select(x => JsonNode.Parse(x)).ToList();
+                List<JsonNode> nodeArray = JsonItem.Value.Split(',').Select(x => JsonNode.Parse(x)).ToList();
 
                 JsonObject[EditingPropertyName] = new JsonArray(nodeArray);
             }
-            else if (ValueKind == JsonValueKind.True && BooleanValue != null)
+            else if (JsonItem.ValueKind == JsonValueKind.True && JsonItem.BooleanValue != null)
             {
-                JsonObject[EditingPropertyName] = new JsonBoolean(BooleanValue.Value);
+                JsonObject[EditingPropertyName] = new JsonBoolean(JsonItem.BooleanValue.Value);
             }
         }
         await JsonObjectChanged.InvokeAsync(JsonObject);
-        ClearData();
-        ValueKind = JsonValueKind.Null;
+        JsonItem = null;
         AddNew = false;
-        PropertyName = null;
     }
 
-    private void SelectedValueKind(JsonValueKind jsonValueKind)
-    {
-        ValueKind = jsonValueKind;
-        ClearData();
-    }
+    //private void SelectedValueKind(JsonValueKind jsonValueKind)
+    //{
+    //    ValueKind = jsonValueKind;
+    //    ClearData();
+    //}
 
-    private void ClearData()
-    {
-        Value = null;
-        NumericValue = null;
-    }
+    //private void ClearData()
+    //{
+    //    Value = null;
+    //    NumericValue = null;
+    //}
 }
