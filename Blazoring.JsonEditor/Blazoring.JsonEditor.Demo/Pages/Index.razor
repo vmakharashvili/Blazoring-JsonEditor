@@ -2,7 +2,10 @@
 
 <h1>Json Editor Sample</h1>
 
-<div>@MyJsonValue.JsonValue</div>
+<div class="view-json">
+    <h4>View Json string</h4>
+    @MyJsonValue.JsonValue
+</div>
 
 <EditForm Model="MyJsonValue">
     <JsonEditor @bind-Value="MyJsonValue.JsonValue" FieldName="@nameof(JsonTestModel.JsonValue)" 

@@ -181,3 +181,10 @@ app {
         display: block;
     }
 }
+
+.view-json {
+    padding: 10px;
+    background:lightblue;
+    margin: 10px 0px;
+    border: 1px solid #808080;
+}

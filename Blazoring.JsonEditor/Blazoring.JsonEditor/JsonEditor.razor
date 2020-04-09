@@ -1,9 +1,11 @@
 ﻿@using System.Text.Json
 @using System.Linq.Expressions
 @inherits InputBase<string?>
+@inject Microsoft.JSInterop.IJSRuntime JS
 
 <div class="json-content">
     <span>{</span>
+    <button class="j-btn j-btn-right" @onclick="CopyToClipboard">🗇</button>
     @if (JsonObject != null)
     {
         <div style="margin-left:20px; min-width:500px">
@@ -67,6 +69,11 @@
 <ValidationMessage For="@ValidationFor" />
 
 <style>
+    .json-content {
+        padding:5px;
+        border:1px solid #ccc;
+    }
+
     .j-btn {
         padding: 8px;
         border-radius: 5px;
@@ -89,6 +96,18 @@
         border-radius:5px;
         border:1px solid #ccc;
         width:100%;
+        line-height:1.2em;
+    }
+
+    .j-btn-right {
+        position: absolute;
+        right: 32px;
+        left: auto;
+        height: 26px;
+    }
+
+    .valid-c {
+        color:red;
     }
 
     .property-name {
@@ -128,6 +147,7 @@
         color: chocolate;
     }
 </style>
+
 
 @code {
 
@@ -188,6 +208,11 @@
             EditContext.NotifyFieldChanged(new FieldIdentifier(EditContext.Model, FieldName));
             StateHasChanged();
         }
+    }
+
+    private async Task CopyToClipboard()
+    {
+        await JS.InvokeAsync<string?>("CopyToClipboard", new object[] { Value });
     }
 
 }

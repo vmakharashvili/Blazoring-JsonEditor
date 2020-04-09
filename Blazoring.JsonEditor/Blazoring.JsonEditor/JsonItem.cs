@@ -11,14 +11,15 @@ namespace Blazoring.JsonEditor
         [RequiredIf(nameof(JsonItem.ValueKind), JsonValueKind.Undefined, JsonValueKind.Number, JsonValueKind.String, JsonValueKind.Object, JsonValueKind.Array, JsonValueKind.True)]
         public string? PropertyName { get; set; }
 
-        [RequiredIf(nameof(JsonItem.ValueKind), JsonValueKind.String, JsonValueKind.Array, JsonValueKind.False, JsonValueKind.Null)]
+        [RequiredIf(nameof(JsonItem.ValueKind), JsonValueKind.String, JsonValueKind.Array, JsonValueKind.False, JsonValueKind.Null, JsonValueKind.True)]
         public string? Value { get; set; }
 
         [RequiredIf(nameof(JsonItem.ValueKind), JsonValueKind.Number)]
         public double? NumericValue { get; set; }
 
-        [RequiredIf(nameof(JsonItem.Value), JsonValueKind.True)]
-        public bool? BooleanValue { get; set; }
+        //[RequiredIf(nameof(JsonItem.Value), JsonValueKind.True)]
+        //public bool? BooleanValue { get; set; }
+
         public JsonValueKind ValueKind { get; set; }
 
     }
