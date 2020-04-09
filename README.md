@@ -28,3 +28,5 @@ Also, you need to add javascript file in index.html file:
 ```
 
 Blazoring.JsonEditor doesn't work without EditForm. Also, validation is required.
+
+You can see [live sample here](https://peaceful-golick-f36338.netlify.com/)
