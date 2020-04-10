@@ -50,7 +50,7 @@
                     <JsonItemEditor JsonObject="@JsonObject" JsonObjectChanged="@ValueUpdated" KeyValues="KeyValues"
                                     EditingPropertyName="@value"></JsonItemEditor>
                 }
-                <span><button class="j-btn j-btn-danger" @onclick="@(() => RemoveValue(value))">V</button></span>
+                <span><button class="j-btn j-btn-danger" @onclick="@(() => RemoveValue(value))"><i class="fas fa-times"></i></button></span>
             </div>
         }
         <div>

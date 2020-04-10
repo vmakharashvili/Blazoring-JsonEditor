@@ -1,7 +1,21 @@
 ﻿@using System.Text.Json
 
 <button @onclick="@(() => AddNew1())" class="j-btn">
-    @(AddNew ? "Ð" : (string.IsNullOrEmpty(EditingPropertyName) ? "Ê" : "$"))
+    @if (AddNew)
+    {
+        <i class="fas fa-minus"></i>
+    }
+    else
+    {
+        if (string.IsNullOrEmpty(EditingPropertyName))
+        {
+        <i class="fas fa-plus"></i>
+        }
+        else
+        {
+            <i class="fas fa-edit"></i>
+        }
+    }
 </button>
 
 @if (AddNew)
@@ -90,7 +104,7 @@
                 <ValidationMessage For="@(() => JsonItem.Value)" />
             }
         </div>
-        <button type="submit" class="j-btn">P</button>
+        <button type="submit" class="j-btn-l"><i class="fas fa-check-square"></i></button>
     </div>
     </EditForm>
 }
@@ -171,6 +185,10 @@
             {
                 string Value1 = f.ToJsonString();
                 JsonItem.Value = Value1.Substring(1, Value1.Length - 2);
+            }
+            else if(f.ValueKind == JsonValueKind.Null)
+            {
+                JsonItem.ValueKind = JsonValueKind.Undefined;
             }
         }
     }
