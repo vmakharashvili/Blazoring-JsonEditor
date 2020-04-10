@@ -188,3 +188,16 @@ app {
     margin: 10px 0px;
     border: 1px solid #808080;
 }
+
+.view-json p{
+    padding:5px;
+    border-radius:5px;
+    border:1px solid darkblue;
+    background:lightyellow;
+}
+
+.form-container {
+    padding:20px;
+    border: 1px solid #ccc;
+    border-radius:20px;
+}
