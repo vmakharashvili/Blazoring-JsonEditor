@@ -1,5 +1,5 @@
 # Blazoring.JsonEditor
-Json file editor for Blazor apps. This editor was created and tested on WebAssembly Blazor app. It is not known how well it works in Server-side Blazor.
+Json editor for Blazor apps. This editor was created and tested on WebAssembly Blazor app. It is not known how well it works in Server-side Blazor.
 
 ## Json Editor tool
 
