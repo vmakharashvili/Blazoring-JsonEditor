@@ -1,0 +1,40 @@
+﻿@page "/InForm"
+
+<h1>Json Editor Example in Form</h1>
+
+<div class="view-json">
+    <h4>View Json string</h4>
+    <p>@(MyJsonValue.JsonValue)</p>
+</div>
+
+<div class="form-container">
+<EditForm Model="@MyJsonValue" OnValidSubmit="Save">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label>Name:</label>
+        <InputText @bind-Value="MyJsonValue.Name" class="form-control"></InputText>
+        <ValidationMessage For="@(() => MyJsonValue.Name)" />
+    </div>
+
+    <div class="form-group">
+    <label>Json Value:</label>
+    <JsonEditor @bind-Value="@MyJsonValue.JsonValue" FieldName="@nameof(JsonTestModel.JsonValue)"
+                ValidationFor="@(() => MyJsonValue.JsonValue)"></JsonEditor>
+    </div>
+    <button type="submit">Save</button>
+</EditForm>
+</div>
+
+@code {
+    private JsonTestModel MyJsonValue { get; set; }
+
+    protected override void OnInitialized()
+    {
+        MyJsonValue = new JsonTestModel();
+    }
+
+    private void Save()
+    {
+
+    }
+}
