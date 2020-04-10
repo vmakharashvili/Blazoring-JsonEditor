@@ -17,6 +17,11 @@ Also, you need to add javascript file in index.html file:
 ```html
 <script src="_content/Blazoring.JsonEditor/Blazoring.JsonEditor.js"></script>
 ```
+For icons suppor JsonEditor uses Font-Awesome icons library. You need to add link to index.html file:
+```html
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
+```
+
 ### Using in code:
 
 ```html
