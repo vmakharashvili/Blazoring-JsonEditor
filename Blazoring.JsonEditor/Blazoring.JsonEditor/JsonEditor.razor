@@ -5,7 +5,7 @@
 
 <div class="json-content">
     <span>{</span>
-    <button class="j-btn-l j-btn-right" @onclick="CopyToClipboard"><i class="fas fa-copy"></i></button>
+    <button type="button" class="j-btn-l j-btn-right" @onclick="CopyToClipboard"><i class="fas fa-copy"></i></button>
     @if (JsonObject != null)
     {
         <div style="margin-left:20px; min-width:500px">
@@ -52,7 +52,7 @@
                         <JsonItemEditor JsonObject="@JsonObject" JsonObjectChanged="@ValueUpdated" KeyValues="KeyValues"
                                         EditingPropertyName="@value"></JsonItemEditor>
                     }
-                    <span><button class="j-btn j-btn-danger" @onclick="@(() => RemoveValue(value))"><i class="fas fa-times"></i></button></span>
+                    <span><button type="button" class="j-btn j-btn-danger" @onclick="@(() => RemoveValue(value))"><i class="fas fa-times"></i></button></span>
                 </div>
             }
             <div>
