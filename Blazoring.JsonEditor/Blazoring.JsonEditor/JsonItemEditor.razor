@@ -36,11 +36,11 @@
                 <label>Property Name</label>
                 @if (string.IsNullOrEmpty(EditingPropertyName))
                 {
-                    <InputText @bind-Value="JsonItem.PropertyName" class="j-txt" />
+                    <InputText @bind-Value="@JsonItem.PropertyName" class="j-txt" />
                 }
                 else
                 {
-                    <InputText @bind-Value="JsonItem.PropertyName" class="j-txt" readonly></InputText>
+                    <InputText @bind-Value="@JsonItem.PropertyName" class="j-txt" readonly></InputText>
                 }
                 <ValidationMessage For="@(() => JsonItem.PropertyName)" />
             </div>
@@ -149,20 +149,20 @@
 
     private void AddNew1()
     {
-        JsonItem = new JsonItem();
         AddNew = !AddNew;
         ValidationMsg = null;
         StateHasChanged();
+
     }
 
     protected override void OnParametersSet()
     {
+        JsonItem = new JsonItem();
         @if (EditingPropertyName != null)
         {
-            JsonItem = new JsonItem();
             JsonItem.PropertyName = EditingPropertyName;
 
-            var f = JsonObject.GetPropertyValue(EditingPropertyName);
+            var f = JsonObject?.GetPropertyValue(EditingPropertyName);
             JsonItem.ValueKind = f.ValueKind;
             if (f.ValueKind == JsonValueKind.String)
             {
@@ -190,6 +190,8 @@
             {
                 JsonItem.ValueKind = JsonValueKind.Undefined;
             }
+
+            Console.WriteLine(JsonSerializer.Serialize(JsonItem));
         }
     }
 
